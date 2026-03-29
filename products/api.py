@@ -2,18 +2,18 @@ from fastapi import APIRouter
 from products.model import Product
 from products.repository import ProductRepository
 from products.service import ProductService
-from core.database import get_engine
+from core.database import async_session
 
 
 products_api = APIRouter(prefix="/products", tags=["products"])
 
-repo = ProductRepository(get_engine())
+repo = ProductRepository(session_factory=async_session)
 service = ProductService(repo)
 
 
 @products_api.get("/")
 async def get_products() -> list[Product]:
-    return service.get_products()
+    return await service.get_products()
     # load_dotenv()
 
     # DATABASE_URL = os.getenv("DATABASE_URL")
