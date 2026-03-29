@@ -1,21 +1,16 @@
-from core.database import async_session
-from features.repository import FeaturesRepository
-from features.service import FeatureService
 from products.model import Product
 from products.repository import ProductRepository
+from features.service import FeatureService
 
 
 class ProductService:
-    def __init__(self, repo: ProductRepository):
+
+    def __init__(self, repo: ProductRepository, feature_service: FeatureService):
         self.repo = repo
+        self.feature_service = feature_service
 
     async def get_products(self) -> list[Product]:
-        repo = FeaturesRepository(session_factory=async_session)
-        feature_service = FeatureService(repo)
         products = await self.repo.get_products()
-        features = await feature_service.get_features(product_id=2)
+        features = await self.feature_service.get_features(product_id=2)
 
-        # for product in products:
-        #     product.features =
-
-        return await self.repo.get_products()
+        return products

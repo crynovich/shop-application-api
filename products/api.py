@@ -1,18 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from products.model import Product
-from products.repository import ProductRepository
-from products.service import ProductService
-from core.database import async_session
+from core.deps import get_product_service
 
 
 products_api = APIRouter(prefix="/products", tags=["products"])
 
-repo = ProductRepository(session_factory=async_session)
-service = ProductService(repo)
-
 
 @products_api.get("/")
-async def get_products() -> list[Product]:
+async def get_products(
+    service=Depends(get_product_service),
+) -> list[Product]:
     return await service.get_products()
     # load_dotenv()
 
