@@ -5,7 +5,13 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}".format(
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    db=os.getenv("DB_NAME"),
+)
 
 _engine: AsyncEngine | None = None
 
