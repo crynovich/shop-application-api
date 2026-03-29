@@ -1,11 +1,12 @@
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from features.model import Feature
 
 
 class FeaturesRepository:
 
-    def __init__(self, session_factory):
+    def __init__(self, session_factory: async_sessionmaker[AsyncSession]):
         self.session_factory = session_factory
 
     async def get_features(self, product_id: int) -> list[Feature]:
@@ -18,4 +19,4 @@ class FeaturesRepository:
                 ),
                 {"product_id": product_id},
             )
-            return [Feature(**row._mapping) for row in result]
+            return [Feature(**row) for row in result.mappings()]

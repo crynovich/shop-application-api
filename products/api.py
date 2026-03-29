@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from products.model import Product
 from core.deps import get_product_service
+from products.service import ProductService
 
 
 products_api = APIRouter(prefix="/products", tags=["products"])
@@ -8,7 +9,7 @@ products_api = APIRouter(prefix="/products", tags=["products"])
 
 @products_api.get("/")
 async def get_products(
-    service=Depends(get_product_service),
+    service: ProductService = Depends(get_product_service),
 ) -> list[Product]:
     return await service.get_products()
     # load_dotenv()

@@ -1,11 +1,12 @@
 from sqlalchemy import text
 
 from products.model import Product
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 
 class ProductRepository:
 
-    def __init__(self, session_factory):
+    def __init__(self, session_factory: async_sessionmaker[AsyncSession]):
         self.session_factory = session_factory
 
     async def get_products(self) -> list[Product]:
@@ -13,4 +14,4 @@ class ProductRepository:
             result = await session.execute(
                 text("SELECT id, name, price, description FROM dbo.products")
             )
-            return [Product(**row._mapping) for row in result]
+            return [Product(**row) for row in result.mappings()]
