@@ -6,5 +6,5 @@ class Product(BaseModel):
     name: str
     price: float
     description: str
-    features: list[str]
+    # features: list[str]
     # specifications
