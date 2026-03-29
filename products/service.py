@@ -11,6 +11,10 @@ class ProductService:
 
     async def get_products(self) -> list[Product]:
         products = await self.repo.get_products()
-        features = await self.feature_service.get_features(product_id=2)
+        for product in products:
+            product.features = [
+                f.name
+                for f in await self.feature_service.get_features(product_id=product.id)
+            ]
 
         return products
