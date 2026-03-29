@@ -1,17 +1,34 @@
 from fastapi import APIRouter
 from models.product import Product
+from dotenv import load_dotenv
+import os
+
+from sqlalchemy import create_engine, text
+
 
 router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.get("/")
 async def get_products() -> list[Product]:
+    load_dotenv()
+
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    engine = create_engine(DATABASE_URL)
+
+    with engine.connect() as conn:
+        result = conn.execute(
+            text("SELECT id, name FROM dbo.products WHERE price > :price"), {"price": 2}
+        )
+        for row in result:
+            print(row)
+
     products = [
         Product(
             id=1,
             name="Wireless Mouse",
             price=22.99,
-            description="he Wireless Mouse is designed for comfort and efficiency, offering a sleek and ergonomic design that fits perfectly in your hand. Ideal for both everyday use and professional environments, this mouse provides the freedom of wireless connectivity with the reliability of a wired device.",
+            description="The Wireless Mouse is designed for comfort and efficiency, offering a sleek and ergonomic design that fits perfectly in your hand. Ideal for both everyday use and professional environments, this mouse provides the freedom of wireless connectivity with the reliability of a wired device.",
             features=[
                 "Ergonomic Design: The contoured shape and soft rubber grips ensure that your hand remains comfortable, even after long hours of use.",
                 "Wireless Connectivity: Enjoy the convenience of wireless technology with a reliable connection up to 10 meters (33 feet) away.",
