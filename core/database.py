@@ -9,12 +9,21 @@ from sqlalchemy.ext.asyncio import (
 
 load_dotenv()
 
+passwordFile = os.getenv("POSTGRES_PASSWORD_FILE")
+if passwordFile is None:
+    raise RuntimeError("DB PASSWORD NOT CONFIGURED")
+
+with open(passwordFile, "r") as f:
+    DB_PASSWORD = f.read().strip()
+
+print(DB_PASSWORD)
+
 DATABASE_URL = "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}".format(
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    db=os.getenv("DB_NAME"),
+    user=os.getenv("POSTGRES_DB_USER"),
+    password=DB_PASSWORD,
+    host=os.getenv("POSTGRES_DB_HOST"),
+    port=os.getenv("POSTGRES_DB_PORT"),
+    db=os.getenv("POSTGRES_DB"),
 )
 
 _engine: AsyncEngine | None = None
