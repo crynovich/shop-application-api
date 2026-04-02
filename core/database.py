@@ -16,8 +16,6 @@ if passwordFile is None:
 with open(passwordFile, "r") as f:
     DB_PASSWORD = f.read().strip()
 
-print(DB_PASSWORD)
-
 DATABASE_URL = "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}".format(
     user=os.getenv("POSTGRES_DB_USER"),
     password=DB_PASSWORD,
