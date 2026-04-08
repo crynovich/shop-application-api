@@ -14,17 +14,19 @@ services:
     ports:
       - 8000:8000
     environment:
-      - POSTGRES_DB=shop-application
+      - POSTGRES_DB=shop-application-docker
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
 
       - POSTGRES_DB_HOST=db
       - POSTGRES_DB_USER=postgres
       - POSTGRES_DB_PORT=5432
+      # todo: fix this later
       - POSTGRES_DB_PASSWORD=admin
     secrets:
       - db-password
     volumes:
       - .:/app
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 
     # The commented out section below is an example of how to define a PostgreSQL
@@ -42,20 +44,23 @@ services:
     user: postgres
     secrets:
       - db-password
-    volumes:
-      - db-data:/var/lib/postgresql
+    # volumes:
+    #   - db-data:/var/lib/postgresql
     environment:
-      - POSTGRES_DB=shop-application
+      - POSTGRES_DB=shop-application-docker
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     expose:
       - 5432
+    ports:
+      - "5433:5432"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
       timeout: 5s
       retries: 5
-volumes:
-  db-data:
+# volumes:
+#   db-data:
 secrets:
   db-password:
+    # todo: figure out why this is allowed
     file: db/password.txt
