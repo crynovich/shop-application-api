@@ -31,7 +31,9 @@ _engine: AsyncEngine | None = None
 def get_engine() -> AsyncEngine:
     global _engine
     if _engine is None:
-        _engine = create_async_engine(DATABASE_URL)
+        ssl = os.getenv("POSTGRES_SSL", "false").lower() == "true"
+        connect_args = {"ssl": "require"} if ssl else {}
+        _engine = create_async_engine(DATABASE_URL, connect_args=connect_args)
     return _engine
 
 
